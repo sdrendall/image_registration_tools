@@ -91,6 +91,8 @@ int main(int argc, char** argv) {
     // If not inverse, apply normal transform
     if (!options[INVERT_TRANSFORM]) {
         image = apply_transform<ImageType, TRANSFORM_TYPE>(image, transform);
+    } else {
+        
     }
 
     // Else, invert transform

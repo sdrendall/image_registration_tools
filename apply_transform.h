@@ -1,6 +1,7 @@
 #include "itkImage.h"
 #include "itkResampleImageFilter.h"
 #include "itkBSplineInterpolateImageFunction.h"
+#include "itkCompositeTransform.h"
 
 #include "optionparser.h"
 #include "image_io.h"

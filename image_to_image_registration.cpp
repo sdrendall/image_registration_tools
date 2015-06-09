@@ -1,5 +1,5 @@
 #include <iostream>
-#include "optionParser.h"
+#include "optionparser.h"
 
 #include "itkImage.h"
 #include "itkMultiThreader.h"
