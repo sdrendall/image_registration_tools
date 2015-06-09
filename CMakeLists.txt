@@ -1,5 +1,5 @@
 PROJECT(image_registration_tools)
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 2.7)
 
 FIND_PACKAGE(ITK)
 IF(ITK_FOUND)
