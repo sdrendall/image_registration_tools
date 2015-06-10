@@ -11,6 +11,9 @@
 #ifndef APPLY_TRANSFORM
 #define APPLY_TRANSFORM
 
+typedef itk::CompositeTransform<double, 2> COMPOSITE_TRANSFORM_TYPE;
+
+
 template<typename IMAGE_TYPE, typename TRANSFORM_TYPE>
 typename IMAGE_TYPE::Pointer apply_transform(typename IMAGE_TYPE::Pointer image, typename TRANSFORM_TYPE::Pointer transform) {
     // Applys the transform to the image using bspline interpolation

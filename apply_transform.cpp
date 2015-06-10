@@ -46,7 +46,8 @@ enum optionIndex {
     MOVING_IMAGE,
     OUTPUT_PATH,
     TRANSFORM_PATH,
-    INVERT_TRANSFORM
+    INVERT_TRANSFORM,
+    INPUT_TRANSFORM_TYPE
 };
 
 
@@ -58,6 +59,8 @@ const option::Descriptor usage[] = {
     {OUTPUT_PATH, 0, "o", "output", Arg::Required, "--output, -o path \tPath to save the transformed moving image"},
     {TRANSFORM_PATH, 0, "t", "transform", Arg::Required, "--transform, -t path \tPath to the transform to apply"},
     {INVERT_TRANSFORM, 0, "i", "invert", Arg::None, "--invert, -i \tInvert the given transform"},
+    {INPUT_TRANSFORM_TYPE, 0, "r", "transform_type", Arg::Required, "--transform_type -r type \tType of the transform to be applied\n"
+                                                                    "Default: itk::CompositeTransform"},
     {0,0,0,0,0,0}
 };
 
@@ -88,17 +91,23 @@ int main(int argc, char** argv) {
     typedef itk::Image<float, 2> ImageType; 
     ImageType::Pointer image = load_image<ImageType>(options[MOVING_IMAGE].arg);
 
+    // Read transform
+    COMPOSITE_TRANSFORM_TYPE::Pointer transform = read_transform<COMPOSITE_TRANSFORM_TYPE>(options[TRANSFORM_PATH].arg);
+
     // If not inverse, apply normal transform
     if (!options[INVERT_TRANSFORM]) {
-        image = apply_transform<ImageType, TRANSFORM_TYPE>(image, transform);
+        image = apply_transform<ImageType, COMPOSITE_TRANSFORM_TYPE>(image, transform);
     } else {
-        
+    // TODO: Temp message
+    cout << "Inverted transforms not supported yet!" << endl;
     }
 
     // Else, invert transform
         // If has method (GetInverse) use inverse
 
         // Else, use deformation field
+
+
 
     return 0;
 }

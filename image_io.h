@@ -1,6 +1,8 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTransformFileWriter.h"
+#include "itkTransformFileReader.h"
+#include "itkTransformFactoryBase.h"
 
 #ifndef IMAGE_IO
 #define IMAGE_IO
@@ -26,13 +28,27 @@ void write_image(const typename IMAGE_TYPE::Pointer, const char* image_path) {
     image_writer->Update();
 }
 
-template<typename TRANSFORM_PTR_TYPE>
-void write_transform(const TRANSFORM_PTR_TYPE transform, const char* image_path) {
-    typedef itk::TransformFileWriterTemplate<double> TransformWriterType;
-    TransformWriterType::Pointer transform_writer = TransformWriterType::New();
+template<typename TRANSFORM_TYPE>
+typename TRANSFORM_TYPE::Pointer read_transform(const char* transform_path) {
+    typedef itk::TransformFileReaderTemplate<typename TRANSFORM_TYPE::ScalarType> TransformReaderType;
+
+    // Not sure why I need to do this, but it was in the example
+    itk::TransformFactoryBase::RegisterDefaultTransforms();
+
+    typename TransformReaderType::Pointer transform_reader = TransformReaderType::New();
+    transform_reader->SetFileName(transform_path);
+    transform_reader->Update();
+
+    return static_cast<TRANSFORM_TYPE*>(transform_reader->GetTransformList()->begin()->GetPointer());
+}
+
+template<typename TRANSFORM_TYPE>
+void write_transform(const typename TRANSFORM_TYPE::Pointer transform, const char* transform_path) {
+    typedef itk::TransformFileWriterTemplate<typename TRANSFORM_TYPE::ScalarType> TransformWriterType;
+    typename TransformWriterType::Pointer transform_writer = TransformWriterType::New();
 
     transform_writer->AddTransform(transform);
-    transform_writer->SetFileName(image_path);
+    transform_writer->SetFileName(transform_path);
     transform_writer->Update();
 }
 #endif
