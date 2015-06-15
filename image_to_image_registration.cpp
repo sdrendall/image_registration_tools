@@ -134,7 +134,7 @@ const option::Descriptor usage[] = {
 
 int main(int argc, char** argv) {
     // Parses the input arguments using the lean mean option parser
-    argv+=(argc>0);
+    argv += (argc > 0);
     argc-=(argc>0);
 
     option::Stats stats(usage, argc, argv);
@@ -229,7 +229,7 @@ RIGID_TRANSFORM_TYPE::Pointer compute_rigid_transform(IMAGE_TYPE::Pointer fixed_
 }
 
 
-BSPLINE_TRANSFORM_TYPE::Pointer compute_bSpline_transform(IMAGE_TYPE::Pointer moving_image, IMAGE_TYPE::Pointer fixed_image){
+BSPLINE_TRANSFORM_TYPE::Pointer compute_bSpline_transform(IMAGE_TYPE::Pointer fixed_image, IMAGE_TYPE::Pointer moving_image){
     typedef itk::LBFGSBOptimizerv4 OptimizerType;
     typedef itk::MattesMutualInformationImageToImageMetricv4<IMAGE_TYPE, IMAGE_TYPE> MetricType;
     typedef itk::ImageRegistrationMethodv4<IMAGE_TYPE, IMAGE_TYPE, BSPLINE_TRANSFORM_TYPE> RegistrationType;
