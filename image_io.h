@@ -19,12 +19,13 @@ typename IMAGE_TYPE::Pointer load_image(const char* image_path) {
 }
 
 template<typename IMAGE_TYPE>
-void write_image(const typename IMAGE_TYPE::Pointer, const char* image_path) {
+void write_image(const typename IMAGE_TYPE::Pointer input_image, const char* image_path) {
     // Writes an itk image of type IMAGE_TYPE to the location specified in image_path
     // The image file format is determined using the suffix of image_path
     typedef itk::ImageFileWriter<IMAGE_TYPE> ImageWriterType;
     typename ImageWriterType::Pointer image_writer = ImageWriterType::New();
     image_writer->SetFileName(image_path);
+    image_writer->SetInput(input_image);
     image_writer->Update();
 }
 
