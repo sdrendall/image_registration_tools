@@ -1,10 +1,10 @@
+#ifndef IMAGE_SLICING
+#define IMAGE_SLICING
+
 #include "itkImage.h"
 #include "itkExtractImageFilter.h"
 
 #include "image_io.h"
-
-#ifndef IMAGE_SLICING
-#define IMAGE_SLICING
 
 
 template<typename IMAGE_TYPE>

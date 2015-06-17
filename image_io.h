@@ -1,11 +1,11 @@
+#ifndef IMAGE_IO
+#define IMAGE_IO
+
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTransformFileWriter.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFactoryBase.h"
-
-#ifndef IMAGE_IO
-#define IMAGE_IO
 
 template<typename IMAGE_TYPE>
 typename IMAGE_TYPE::Pointer load_image(const char* image_path) {

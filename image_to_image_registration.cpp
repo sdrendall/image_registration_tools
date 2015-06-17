@@ -18,19 +18,17 @@ public:
   typedef itk::LBFGSBOptimizerv4 OptimizerType;
   typedef   const OptimizerType *                  OptimizerPointer;
 
-  void Execute(itk::Object *caller, const itk::EventObject & event)
-    {
+  void Execute(itk::Object *caller, const itk::EventObject & event) {
     Execute( (const itk::Object *)caller, event);
     }
 
-  void Execute(const itk::Object * object, const itk::EventObject & event)
-    {
+  void Execute(const itk::Object * object, const itk::EventObject & event) {
     OptimizerPointer optimizer =
       dynamic_cast< OptimizerPointer >( object );
-    if( ! itk::IterationEvent().CheckEvent( &event ) )
-      {
-      return;
-      }
+    if (! itk::IterationEvent().CheckEvent( &event )) {
+        return;
+    }
+
     cout << optimizer->GetCurrentIteration() << "   ";
     cout << optimizer->GetValue() << "   ";
     cout << optimizer->GetCurrentPosition() << endl;
@@ -73,32 +71,26 @@ public:
 
 
 // option parsing
-struct Arg: public option::Arg
- {
-   static void printError(const char* msg1, const option::Option& opt, const char* msg2)
-   {
+struct Arg: public option::Arg {
+   static void printError(const char* msg1, const option::Option& opt, const char* msg2) {
      fprintf(stderr, "ERROR: %s", msg1);
      fwrite(opt.name, opt.namelen, 1, stderr);
      fprintf(stderr, "%s", msg2);
    }
 
-   static option::ArgStatus Unknown(const option::Option& option, bool msg)
-   {
+   static option::ArgStatus Unknown(const option::Option& option, bool msg) {
      if (msg) printError("Unknown option '", option, "'\n");
      return option::ARG_ILLEGAL;
    }
 
-   static option::ArgStatus Required(const option::Option& option, bool msg)
-   {
+   static option::ArgStatus Required(const option::Option& option, bool msg) {
      if (option.arg != 0)
        return option::ARG_OK;
 
-     if (msg) printError("Option '", option, "' requires an argument\n");
-     return option::ARG_ILLEGAL;
+     if (msg) printError("Option '", option, "' requires an argument\n"); return option::ARG_ILLEGAL;
    }
 
-   static option::ArgStatus Numeric(const option::Option& option, bool msg)
-   {
+   static option::ArgStatus Numeric(const option::Option& option, bool msg) {
      char* endptr = 0;
      if (option.arg != 0 && strtol(option.arg, &endptr, 10)){};
      if (endptr != option.arg && *endptr == 0)
@@ -116,7 +108,8 @@ enum optionIndex {
     FIXED_IMAGE,
     MOVING_IMAGE,
     OUTPUT_PATH,
-    TRANSFORM_PATH
+    TRANSFORM_PATH,
+    APPLICATION_TARGET
 };
 
 
@@ -128,6 +121,7 @@ const option::Descriptor usage[] = {
     {MOVING_IMAGE, 0, "m", "moving", Arg::Required, "--moving, -m path \tPath to the moving image."},
     {OUTPUT_PATH, 0, "o", "output", Arg::Required, "--output, -o path \tPath to save the output moving image"},
     {TRANSFORM_PATH, 0, "t", "transform", Arg::Required, "--transform, -t path \tPath to save the computed transform"},
+    {APPLICATION_TARGET, 0, "a", "apply", Arg::Required, "--apply, -a input_path,output_path \tPaths to additional images to apply the transform to"},
     {0,0,0,0,0,0}
 };
 
@@ -135,7 +129,7 @@ const option::Descriptor usage[] = {
 int main(int argc, char** argv) {
     // Parses the input arguments using the lean mean option parser
     argv += (argc > 0);
-    argc-=(argc>0);
+    argc -= (argc > 0);
 
     option::Stats stats(usage, argc, argv);
     option::Option* options = new option::Option[stats.options_max];
@@ -164,6 +158,18 @@ int main(int argc, char** argv) {
     if (options[TRANSFORM_PATH]) {
        COMPOSITE_TRANSFORM_TYPE::Pointer composite_transform = compose_transforms(rigid_transform, bspline_transform);
        write_transform<COMPOSITE_TRANSFORM_TYPE>(composite_transform, options[TRANSFORM_PATH].arg);
+    }
+
+    // Apply images to additional images
+    string arg_str;
+    vector<string> io_paths;
+    for (option::Option* opt = options[APPLICATION_TARGET]; opt; opt = opt->next()) {
+        arg_str = opt->arg;
+        io_paths = split(arg_str, ',');
+        moving_image = load_image<IMAGE_TYPE>(io_paths[0].c_str());
+        moving_image = apply_transform<IMAGE_TYPE, RIGID_TRANSFORM_TYPE>(moving_image, rigid_transform);
+        moving_image = apply_transform<IMAGE_TYPE, BSPLINE_TRANSFORM_TYPE>(moving_image, bspline_transform);
+        write_image<IMAGE_TYPE>(moving_image, io_paths[1].c_str());
     }
 
     return 0;

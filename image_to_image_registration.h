@@ -1,4 +1,9 @@
+#ifndef IMAGE_TO_IMAGE_REGISTRATION
+#define IMAGE_TO_IMAGE_REGISTRATION
+
 #include <iostream>
+#include <vector>
+#include <string>
 #include "optionparser.h"
 
 #include "itkImage.h"
@@ -26,9 +31,7 @@
 
 #include "apply_transform.h"
 #include "image_io.h"
-
-#ifndef IMAGE_TO_IMAGE_REGISTRATION
-#define IMAGE_TO_IMAGE_REGISTRATION
+#include "string_splitting.h"
 
 // For the time being, this works on 2d images
 const int IMAGE_DIMENSIONS = 2;
