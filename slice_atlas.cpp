@@ -88,7 +88,7 @@ int main(int argc, char** argv ) {
     const int slice_index = atoi(options[SLICE_INDEX].arg);
     const char* atlas_path = options[ATLAS_PATH].arg; 
     const char* output_path = options[OUTPUT_PATH].arg;
-    const int axis_to_collapse = options[SLICE_INDEX]? atoi(options[SLICE_INDEX].arg) : 0; // Default to coronal slices
+    const int axis_to_collapse = options[SLICE_AXIS]? atoi(options[SLICE_AXIS].arg) : 0; // Default to coronal slices
 
 
     typedef itk::Image<float, 2> SliceImageType;
